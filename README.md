@@ -2,6 +2,8 @@
 
 A Python implementation of your own version of htop.
 
+**Autor:** Patrick Augusto Pinheiro da Silva
+
 ## 📦 Installing dependencies
 
 Remember that, for the tests, we use a obscure feature of linux called [fuse (FileSystem on Userspace)](https://github.com/libfuse/libfuse). You don't have to understand what it does **but you have to
