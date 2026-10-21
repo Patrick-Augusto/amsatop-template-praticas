@@ -2,7 +2,7 @@
 
 A Python implementation of your own version of htop.
 
-**Autor:** Patrick Augusto Pinheiro da Silva
+**Alumno:** Patrick Augusto Pinheiro da Silva
 
 ## 📦 Installing dependencies
 
