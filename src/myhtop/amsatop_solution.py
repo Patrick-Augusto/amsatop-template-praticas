@@ -20,7 +20,7 @@ class Amsatop(Htop):
         return [self._to_process(task) for task in self._tasks()]
 
     def get_priorities(self) -> list[Process]:
-        raise NotImplementedError("Prac-2.2 implementation needed")
+        return [self._to_process(task, task.stat.priority) for task in self._tasks()]
 
     def get_hup(self) -> list[Process]:
         raise NotImplementedError("Prac-2.3 implementation needed")
