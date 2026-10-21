@@ -1,11 +1,13 @@
 import os
+import signal
 from collections.abc import Iterator
 from typing import NamedTuple
 
 from amsatop import Htop, Process, TaskType
-from amsatop.utils import StatFile, get_stat_file_from_path
+from amsatop.utils import StatFile, get_stat_file_from_path, get_status_file_from_path
 
 PF_KTHREAD = 0x00200000
+SIGHUP_MASK = 2 ** (signal.SIGHUP - 1)
 
 
 class Task(NamedTuple):
@@ -23,7 +25,11 @@ class Amsatop(Htop):
         return [self._to_process(task, task.stat.priority) for task in self._tasks()]
 
     def get_hup(self) -> list[Process]:
-        raise NotImplementedError("Prac-2.3 implementation needed")
+        return [
+            self._to_process(task, task.stat.priority)
+            for task in self._tasks()
+            if self._ignores_hup(task.folder)
+        ]
 
     def _tasks(self) -> Iterator[Task]:
         for entry in os.listdir(self.proc_folder):
@@ -55,6 +61,11 @@ class Amsatop(Htop):
             if stat is None:
                 continue
             yield Task(int(entry), thread_folder, stat, TaskType.THREAD)
+
+    @staticmethod
+    def _ignores_hup(folder: str) -> bool:
+        status = get_status_file_from_path(os.path.join(folder, "status"))
+        return status is not None and int(status.SigIgn, 16) & SIGHUP_MASK != 0
 
     @staticmethod
     def _to_process(task: Task, priority: int | None = None) -> Process:
